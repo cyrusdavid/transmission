@@ -9,6 +9,7 @@ A fully-tested PHP JSON-RPC client library for [Transmission](https://transmissi
  - [Installation](#installation)
  - [Usage](#example-usage)
  - [Usage with Laravel](#use-transmission-with-laravel)
+ - [Advanced](#advanced)
  - [To-Do](#to-do)
  - [License](#license)
 
@@ -86,6 +87,18 @@ Use the library:
 ```php
 Transmission::add($base64EncodedTorrent, true);
 Torrent::stats();
+```
+
+## Advanced
+
+The library uses [Guzzle](http://github.com/guzzle/huzzle) as it's HTTP Client but you can choose to swap it with something else if you want (eg. [Buzz](https://github.com/kriswallsmith/Buzz))
+
+```php
+class BuzzClient extends \Vohof\ClientAbstract {
+    ...
+}
+
+$transmission = new Vohof\Transmission($config, new BuzzClient);
 ```
 
 ## To-Do

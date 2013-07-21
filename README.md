@@ -18,8 +18,10 @@ A fully-tested PHP JSON-RPC client library for [Transmission](https://transmissi
 Install through [Composer](https://getcomposer.org):
 
 ```json
-"require": {
-  "vohof/transmission": "1.0.*"
+{
+  "require": {
+    "vohof/transmission": "1.0.*"
+  }
 }
 ```
 
@@ -27,8 +29,10 @@ Install through [Composer](https://getcomposer.org):
 
 ```php
 $config = array(
-    'host' => 'http://127.0.0.1',
-    'endpoint' => '/transmission/rpc'
+    'host'     => 'http://127.0.0.1',
+    'endpoint' => '/transmission/rpc',
+    'username' => 'foo', // Optional
+    'password' => 'bar' // Optional
 );
 
 $transmission = new Vohof\Transmission($config);
@@ -104,7 +108,6 @@ $transmission = new Vohof\Transmission($config, new BuzzClient);
 ## To-Do
 
 - torrent-rename-path, blocklist-update
-- authentication
 
 ## License
 

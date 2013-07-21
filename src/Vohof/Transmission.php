@@ -31,7 +31,18 @@ class Transmission {
 
         if (is_null($client))
         {
-            $this->client = new GuzzleClient($config['host']);
+            $options = array();
+
+            if (isset($config['username']) and isset($config['password']))
+            {
+                $options = array(
+                    'request.options' => array(
+                        'auth' => array($config['username'], $config['password'])
+                    )
+                );
+            }
+
+            $this->client = new GuzzleClient($config['host'], $options);
         }
         else
         {

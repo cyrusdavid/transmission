@@ -2,13 +2,18 @@
 
 use Mockery as m;
 
-class GuzzleClientTest extends TestCase {
+class GuzzleClientTest extends PHPUnit_Framework_TestCase {
 
     public function setUp()
     {
         parent::setUp();
 
         $this->clientErrorResponseException = m::mock('Guzzle\\Http\\Exception\\ClientErrorResponseException');
+    }
+
+    public function tearDown()
+    {
+        m::close();
     }
 
     /**

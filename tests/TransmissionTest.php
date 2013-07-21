@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class TransmissionTest extends TestCase {
+class TransmissionTest extends PHPUnit_Framework_TestCase {
 
     public function setUp()
     {
@@ -16,6 +16,11 @@ class TransmissionTest extends TestCase {
         $this->client = new Vohof\GuzzleClient('http://foo');
         $this->clientMock = m::mock($this->client);
         $this->tr = new Vohof\Transmission($this->config, $this->clientMock);
+    }
+
+    public function tearDown()
+    {
+        m::close();
     }
 
     /**

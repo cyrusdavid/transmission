@@ -1,6 +1,6 @@
 <?php
 
-class ClientAbstractTest extends TestCase {
+class ClientAbstractTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Vohof\ClientAbstract::getVendorClient()

@@ -4,8 +4,6 @@ abstract class ClientAbstract {
 
     protected $client;
 
-    protected $connected = false;
-
     protected $endpoint;
 
     abstract public function request($method, $params);
@@ -23,10 +21,5 @@ abstract class ClientAbstract {
     public function setEndpoint($endpoint)
     {
         $this->endpoint = $endpoint;
-    }
-
-    protected function isConnected()
-    {
-        return $this->connected;
     }
 }

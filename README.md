@@ -9,6 +9,7 @@ A fully-tested PHP JSON-RPC client library for [Transmission](https://transmissi
  - [Installation](#installation)
  - [Usage](#example-usage)
  - [Usage with Laravel](#use-transmission-with-laravel)
+ - [To-Do](#to-do)
  - [License](#license)
 
 ## Installation
@@ -87,6 +88,10 @@ Transmission::add($base64EncodedTorrent, true);
 Torrent::stats();
 ```
 
+## To-Do
+
+- torrent-rename-path, blocklist-update
+- authentication
 
 ## License
 

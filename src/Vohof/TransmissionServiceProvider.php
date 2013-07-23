@@ -10,23 +10,7 @@ class TransmissionServiceProvider extends ServiceProvider {
     {
         $this->app['transmission'] = $this->app->share(function($app)
         {
-            // TODO: needs a beter way
-            $config = array(
-                'host' => $app['config']->get('transmission::host'),
-                'endpoint' => $app['config']->get('transmission::endpoint')
-            );
-
-            if ($app['config']->has('transmission::username'))
-            {
-                $config['username'] = $app['config']->get('transmission::username');
-            }
-
-            if ($app['config']->has('transmission::password'))
-            {
-                $config['password'] = $app['config']->get('transmission::password');
-            }
-
-            return new Transmission($config);
+            return new Transmission($app['config']->get('transmission::config'));
         });
     }
 

@@ -28,7 +28,7 @@ class GuzzleClient extends ClientAbstract {
 
             if (is_null($response))
             {
-                throw TransmissionBadJsonException::factory(
+                throw TransmissionBadJsonException::forge(
                     'The response from RPC server is invalid.',
                     $req,
                     $res
@@ -37,7 +37,7 @@ class GuzzleClient extends ClientAbstract {
 
             if ($response['result'] != 'success')
             {
-                throw TransmissionResponseException::factory(
+                throw TransmissionResponseException::forge(
                     "The RPC server did not return a success result flag: ${response['result']}",
                     $req,
                     $res
@@ -46,7 +46,7 @@ class GuzzleClient extends ClientAbstract {
 
             if ( ! isset($response['arguments']))
             {
-                throw TransmissionResponseException::factory(
+                throw TransmissionResponseException::forge(
                     "The RPC server did not return any arguments.",
                     $req,
                     $res

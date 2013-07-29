@@ -30,11 +30,6 @@ class GuzzleClient extends ClientAbstract {
                 throw new TransmissionBadJsonException('The response from RPC server is invalid.');
             }
 
-            if ($res['result'] != 'success')
-            {
-                throw new TransmissionResponseException("The RPC server did not return a success result flag: ${res['result']}");
-            }
-
             if ( ! isset($res['arguments']))
             {
                 throw new TransmissionResponseException("The RPC server did not return any arguments.");

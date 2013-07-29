@@ -23,9 +23,10 @@ class GuzzleClient extends ClientAbstract {
                 'arguments' => $params
             )));
 
-            $res = json_decode($req->send()->getBody(true), true);
+            $res = $req->send();
+            $response = json_decode($res->getBody(true), true);
 
-            if (is_null($res))
+            if (is_null($response))
             {
                 throw TransmissionBadJsonException::factory(
                     'The response from RPC server is invalid.',
@@ -34,16 +35,16 @@ class GuzzleClient extends ClientAbstract {
                 );
             }
 
-            if ($res['result'] != 'success')
+            if ($response['result'] != 'success')
             {
                 throw TransmissionResponseException::factory(
-                    "The RPC server did not return a success result flag: ${res['result']}",
+                    "The RPC server did not return a success result flag: ${response['result']}",
                     $req,
                     $res
                 );
             }
 
-            if ( ! isset($res['arguments']))
+            if ( ! isset($response['arguments']))
             {
                 throw TransmissionResponseException::factory(
                     "The RPC server did not return any arguments.",
@@ -52,7 +53,7 @@ class GuzzleClient extends ClientAbstract {
                 );
             }
 
-            return $res['arguments'];
+            return $response['arguments'];
         }
         catch (ClientErrorResponseException $e)
         {

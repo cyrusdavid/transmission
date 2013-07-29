@@ -1,15 +1,13 @@
 <?php namespace Vohof;
 
+use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\Response;
+
 class GuzzleException extends \Guzzle\Http\Exception\BadResponseException {
 
-    public static function forge($message)
+    public static function forge($message, RequestInterface $request, Response $response)
     {
-        $this->message = $message;
-    }
-
-    public static function factory(RequestInterface $request, Response $response)
-    {
-        $e = new $class($this->message);
+        $e = new static($message);
         $e->setResponse($response);
         $e->setRequest($request);
 

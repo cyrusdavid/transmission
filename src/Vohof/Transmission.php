@@ -17,6 +17,27 @@ class Transmission {
      */
     private $client;
 
+    /**
+     * Default fields for torrent-get
+     * @var array
+     */
+    public static $fields = array(
+        'activityDate', 'addedDate', 'bandwidthPriority', 'comment', 'corruptEver',
+        'creator', 'dateCreated', 'desiredAvailable', 'doneDate', 'downloadDir',
+        'downloadedEver', 'downloadLimit', 'downloadLimited', 'error', 'errorString',
+        'eta', 'etaIdle', 'files', 'fileStats', 'hashString', 'haveUnchecked', 'haveValid',
+        'honorsSessionLimits', 'id', 'isFinished', 'isPrivate', 'isStalled',
+        'leftUntilDone', 'magnetLink', 'manualAnnounceTime', 'maxConnectedPeers',
+        'metadataPercentComplete', 'name', 'peer', 'peers', 'peersConnected',
+        'peersFrom', 'peersGettingFromUs', 'peersSendingToUs', 'percentDone', 'pieces',
+        'pieceCount', 'pieceSize', 'priorities', 'queuePosition', 'rateDownload',
+        'rateUpload', 'recheckProgress', 'secondsDownloading', 'secondsSeeding',
+        'seedIdleLimit', 'seedIdleMode', 'seedRatioLimit', 'seedRatioMode',
+        'sizeWhenDone', 'startDate', 'status', 'trackers', 'trackerStats',
+        'totalSize', 'torrentFile', 'uploadedEver', 'uploadLimit', 'uploadLimited',
+        'uploadRatio', 'wanted', 'webseeds', 'webseedsSendingToUs'
+    );
+
     public function __construct(array $config, ClientAbstract $client = null)
     {
         $this->config = $config;
@@ -73,10 +94,10 @@ class Transmission {
         return $this->client->request('torrent-set', $options);
     }
 
-    public function get($ids, $fields)
+    public function get($ids, $fields = null)
     {
         $options = array(
-            'fields' => $fields
+            'fields' => is_null($fields) ? static::$fields : $fields
         );
 
         if ($ids != 'all')

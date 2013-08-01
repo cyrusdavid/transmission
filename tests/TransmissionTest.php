@@ -168,6 +168,12 @@ class TransmissionTest extends PHPUnit_Framework_TestCase {
           ->with('torrent-get', array('ids' => array(1), 'fields' => array('downloadLimit')));
 
         $this->tr->get(1, array('downloadLimit'));
+
+        $this->clientMock->shouldReceive('request')
+          ->once()
+          ->with('torrent-get', array('ids' => array(1), 'fields' => Vohof\Transmission::$fields));
+
+        $this->tr->get(1);
     }
 
     /**

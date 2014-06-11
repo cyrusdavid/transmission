@@ -44,8 +44,8 @@ $torrent = $transmission->add('magnet:?xt=urn:btih:335990d615594b9be409ccfeb9586
 $content = base64_encode(file_get_contents('MyTorrent.torrent'));
 $torrent = $transmission->add($content, true);
 
-// Pause a torrent
-$transmission->action('pause', $torrent['id']);
+// Stop a torrent
+$transmission->action('stop', $torrent['id']);
 
 // Limit download speed
 $transmission->set($torrent['id'], array('downloadLimit' => 100));

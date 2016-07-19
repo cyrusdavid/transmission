@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class TransmissionServiceProvider extends ServiceProvider {
+class TransmissionLaravel5ServiceProvider extends ServiceProvider {
 
     protected $defer = true;
 

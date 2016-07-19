@@ -65,14 +65,14 @@ $transmission->getStats();
 
 See the tests for more usage
 
-## Use Transmission with Laravel
+## Use Transmission with Laravel 5
 
 Add the service provider and alias the package in `config/app.php`
 
 ```php
 'providers' => array(
     ...
-    Vohof\TransmissionServiceProvider::class,
+    Vohof\TransmissionLaravel5ServiceProvider::class,
 ),
 'aliases' => array(
     ...
@@ -84,6 +84,27 @@ Publish config and modify `config/transmission.php`
 
 ```
 $ php artisan vendor:publish --provider="Vohof\TransmissionServiceProvider" --tag="config"
+```
+
+## Use Transmission with Laravel 4
+
+Add the service provider and alias the package in `config/app.php`
+
+```php
+'providers' => array(
+    ...
+    'Vohof\TransmissionServiceProvider'
+),
+'aliases' => array(
+    ...
+    'Transmission' => 'Vohof\TransmissionFacade'
+)
+```
+
+Publish config and modify `app/config/packages/transmission/config.php`
+
+```
+$ php artisan config:publish transmission --path=vendor/vohof/transmission/src/config
 ```
 
 Use the library:

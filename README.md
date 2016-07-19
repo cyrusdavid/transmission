@@ -80,10 +80,10 @@ Add the service provider and alias the package in `config/app.php`
 )
 ```
 
-Publish config and modify `app/config/packages/transmission/config.php`
+Publish config and modify `config/transmission.php`
 
 ```
-$ php artisan config:publish transmission --path=vendor/vohof/transmission/src/config
+$ php artisan vendor:publish --provider="Vohof\TransmissionServiceProvider" --tag="config"
 ```
 
 Use the library:

@@ -1,76 +1,76 @@
 <?php namespace Vohof;
 
-use Guzzle\Http\Exception\ClientErrorResponseException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
-class GuzzleClient extends ClientAbstract {
+class GuzzleClient extends ClientAbstract
+{
 
     protected $lastRequest;
+
     protected $retries = 0;
+
     protected $maxRetries = 5;
 
-    public function __construct($host, $options = array())
+    protected $sessionId;
+
+
+    public function __construct($host, $options = [ ])
     {
-        $this->setVendorClient(new \Guzzle\Http\Client($host, $options));
+        $options['base_uri'] = $host;
+        $this->setVendorClient(new Client($options));
     }
 
-    public function request($method, $params = array())
+
+    public function request($method, $params = [ ])
     {
         $this->lastRequest = func_get_args();
-        try
-        {
-            $req = $this->client->post($this->endpoint, null, json_encode(array(
+        try {
+
+            $options['json'] = [
                 'method' => $method,
                 'arguments' => $params
-            )));
+            ];
 
-            $res = json_decode($req->send()->getBody(true), true);
+            if(isset( $this->sessionId )) {
+                $options['headers']['X-Transmission-Session-Id'] = $this->sessionId;
+            }
 
-            if (is_null($res))
-            {
+            $req = $this->client->post($this->endpoint, $options);
+
+            $res = json_decode($req->getBody(),true);
+
+            if (is_null($res)) {
                 throw new TransmissionBadJsonException('The response from RPC server is invalid.');
             }
 
-            if ($res['result'] != 'success')
-            {
+            if ($res['result'] != 'success') {
                 throw new TransmissionResponseException("The RPC server did not return a success result flag: ${res['result']}");
             }
 
-            if ( ! isset($res['arguments']))
-            {
+            if ( ! isset( $res['arguments'] )) {
                 throw new TransmissionResponseException("The RPC server did not return any arguments.");
             }
 
             return $res['arguments'];
-        }
-        catch (ClientErrorResponseException $e)
-        {
-            $response = $e->getResponse();
+        } catch (ClientException $e) {
+            $response  = $e->getResponse();
             $errorCode = $response->getStatusCode();
 
-            if ($errorCode == 409)
-            {
-                if ( ! $response->hasHeader('X-Transmission-Session-Id'))
-                {
+            if ($errorCode == 409) {
+                if ( ! $response->hasHeader('X-Transmission-Session-Id')) {
                     throw new TransmissionSessionException('No X-Transmission-Session-Id header found.');
                 }
 
-                $sessionId = $response->getHeader('X-Transmission-Session-Id');
-
-                $this->client->setDefaultOption(
-                    'headers/X-Transmission-Session-Id', $sessionId
-                );
+                $this->sessionId = $response->getHeader('X-Transmission-Session-Id');
 
                 $this->retries++;
 
-                if ($this->retries > $this->maxRetries)
-                {
+                if ($this->retries > $this->maxRetries) {
                     throw new TransmissionSessionException('Transmission doesn\'t like our session Id.');
                 }
 
-                return call_user_func_array(
-                    array($this, 'request'),
-                    $this->lastRequest
-                );
+                return call_user_func_array([ $this, 'request' ], $this->lastRequest);
             }
 
             throw $e;
@@ -78,6 +78,17 @@ class GuzzleClient extends ClientAbstract {
     }
 }
 
-class TransmissionBadJsonException extends \Exception {}
-class TransmissionResponseException extends \Exception {}
-class TransmissionSessionException extends \Exception {}
+class TransmissionBadJsonException extends \Exception
+{
+
+}
+
+class TransmissionResponseException extends \Exception
+{
+
+}
+
+class TransmissionSessionException extends \Exception
+{
+
+}

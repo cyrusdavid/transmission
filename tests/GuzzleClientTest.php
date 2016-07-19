@@ -8,7 +8,7 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
     {
         parent::setUp();
 
-        $this->clientErrorResponseException = m::mock('Guzzle\\Http\\Exception\\ClientErrorResponseException');
+        $this->ClientException = m::mock('GuzzleHttp\\Exception\\ClientException');
     }
 
     public function tearDown()
@@ -23,7 +23,7 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
     {
         $client = new Vohof\GuzzleClient('http://foo');
 
-        $this->assertInstanceOf('Guzzle\\Http\\Client', $client->getVendorClient());
+        $this->assertInstanceOf('GuzzleHttp\\Client', $client->getVendorClient());
     }
 
     /**
@@ -47,17 +47,14 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getHeader')->once()->with('X-Transmission-Session-Id')->andReturn('foo');
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(true);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
-
-        $validRes = m::mock();
-        $validRes->shouldReceive('getBody')->with(true)->once()->andReturn(json_encode($res));
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
-        $client->shouldReceive('send')->once()->andReturn($validRes);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
+        $client->shouldReceive('getBody')->once()->andReturn(json_encode($res));
         $client->shouldReceive('setDefaultOption')
-               ->with('headers/X-Transmission-Session-Id', 'foo');
+            ->with('headers/X-Transmission-Session-Id', 'foo');
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);
@@ -67,7 +64,7 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Vohof\GuzzleClient::request()
-     * @expectedException Guzzle\Http\Exception\ClientErrorResponseException
+     * @expectedException GuzzleHttp\Exception\ClientException
      */
     public function testRequestNon409StatusCode()
     {
@@ -75,11 +72,11 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getStatusCode')->andReturn(123456);
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(false);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);
@@ -98,11 +95,11 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getStatusCode')->andReturn(409);
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(false);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);
@@ -122,17 +119,14 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getHeader')->once()->with('X-Transmission-Session-Id')->andReturn('foo');
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(true);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
-
-        $invalidRes = m::mock();
-        $invalidRes->shouldReceive('getBody')->with(true)->once()->andReturn('dfdf');
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
-        $client->shouldReceive('send')->once()->andReturn($invalidRes);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
+        $client->shouldReceive('getBody')->once()->andReturn('dfdf');
         $client->shouldReceive('setDefaultOption')
-               ->with('headers/X-Transmission-Session-Id', 'foo');
+            ->with('headers/X-Transmission-Session-Id', 'foo');
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);
@@ -163,17 +157,14 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getHeader')->once()->with('X-Transmission-Session-Id')->andReturn('foo');
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(true);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
-
-        $unsuccessfulRes = m::mock();
-        $unsuccessfulRes->shouldReceive('getBody')->with(true)->once()->andReturn(json_encode($res));
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
-        $client->shouldReceive('send')->once()->andReturn($unsuccessfulRes);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
+        $client->shouldReceive('getBody')->once()->andReturn(json_encode($res));
         $client->shouldReceive('setDefaultOption')
-               ->with('headers/X-Transmission-Session-Id', 'foo');
+            ->with('headers/X-Transmission-Session-Id', 'foo');
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);
@@ -197,17 +188,14 @@ class GuzzleClientTest extends PHPUnit_Framework_TestCase {
         $response->shouldReceive('getHeader')->once()->with('X-Transmission-Session-Id')->andReturn('foo');
         $response->shouldReceive('hasHeader')->with('X-Transmission-Session-Id')->andReturn(true);
 
-        $this->clientErrorResponseException->shouldReceive('getResponse')->andReturn($response);
-
-        $unsuccessfulRes = m::mock();
-        $unsuccessfulRes->shouldReceive('getBody')->with(true)->once()->andReturn(json_encode($res));
+        $this->ClientException->shouldReceive('getResponse')->andReturn($response);
 
         $client = m::mock();
         $client->shouldReceive('post')->andReturn($client);
-        $client->shouldReceive('send')->once()->andThrow($this->clientErrorResponseException);
-        $client->shouldReceive('send')->once()->andReturn($unsuccessfulRes);
+        $client->shouldReceive('getBody')->once()->andThrow($this->ClientException);
+        $client->shouldReceive('getBody')->once()->andReturn(json_encode($res));
         $client->shouldReceive('setDefaultOption')
-               ->with('headers/X-Transmission-Session-Id', 'foo');
+            ->with('headers/X-Transmission-Session-Id', 'foo');
 
         $gclient = new Vohof\GuzzleClient('http://foo');
         $gclient->setVendorClient($client);

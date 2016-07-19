@@ -12,6 +12,8 @@ class GuzzleClient extends ClientAbstract
 
     protected $maxRetries = 5;
 
+    protected $sessionId;
+
 
     public function __construct($host, $options = [ ])
     {
@@ -24,9 +26,21 @@ class GuzzleClient extends ClientAbstract
     {
         $this->lastRequest = func_get_args();
         try {
-            $res = $this->client->post($method, $params)->json();
 
-            if (!is_array($res)) {
+            $options['json'] = [
+                'method' => $method,
+                'arguments' => $params
+            ];
+
+            if(isset( $this->sessionId )) {
+                $options['headers']['X-Transmission-Session-Id'] = $this->sessionId;
+            }
+
+            $req = $this->client->post($this->endpoint, $options);
+
+            $res = json_decode($req->getBody(),true);
+
+            if (is_null($res)) {
                 throw new TransmissionBadJsonException('The response from RPC server is invalid.');
             }
 
@@ -48,9 +62,7 @@ class GuzzleClient extends ClientAbstract
                     throw new TransmissionSessionException('No X-Transmission-Session-Id header found.');
                 }
 
-                $sessionId = $response->getHeader('X-Transmission-Session-Id');
-
-                $this->client->setDefaultOption('headers/X-Transmission-Session-Id', $sessionId);
+                $this->sessionId = $response->getHeader('X-Transmission-Session-Id');
 
                 $this->retries++;
 

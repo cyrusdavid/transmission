@@ -72,11 +72,11 @@ Add the service provider and alias the package in `config/app.php`
 ```php
 'providers' => array(
     ...
-    'Vohof\TransmissionServiceProvider'
+    Vohof\TransmissionServiceProvider::class,
 ),
 'aliases' => array(
     ...
-    'Transmission' => 'Vohof\TransmissionFacade'
+    'Transmission' => Vohof\TransmissionFacade::class,
 )
 ```
 

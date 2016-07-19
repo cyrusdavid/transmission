@@ -4,19 +4,20 @@ use Illuminate\Support\ServiceProvider;
 
 class TransmissionServiceProvider extends ServiceProvider {
 
-    protected $defer = false;
+    protected $defer = true;
 
     public function register()
     {
-        $this->app['transmission'] = $this->app->share(function($app)
-        {
-            return new Transmission($app['config']->get('transmission::config'));
+        $this->app->singleton('transmission', function ($app) {
+            return new Transmission(config('transmission'));
         });
     }
 
     public function boot()
     {
-        $this->package('transmission', 'transmission', realpath(__DIR__. '/../'));
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('transmission.php')
+        ], 'config');
     }
 
     public function provides()

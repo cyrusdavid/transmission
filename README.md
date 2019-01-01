@@ -54,7 +54,7 @@ $transmission->set($torrent['id'], array('downloadLimit' => 100));
 $transmission->get($torrent['id'], array('totalSize'));
 
 // Remove torrent
-$transmission->remove($torrent['id']););
+$transmission->remove($torrent['id']));
 
 // Remove torrent and its files
 $transmission->remove($torrent['id'], true);
